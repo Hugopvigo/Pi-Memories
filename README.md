@@ -1,141 +1,136 @@
-# Pi Memory
+<p align="center">
+  <img src="docs/capturas/00-cabecera.png" alt="Pi Memories — memoria persistente en Markdown para un agente de IA" width="100%">
+</p>
 
-Repositorio de memoria persistente para el agente **Tuxillo** (antes BrightEagle), sincronizado con GitHub.
+<p align="center">
+  <b>La memoria de un agente de IA, en Markdown y versionada en Git.</b><br>
+  Perfil, proyectos y sesiones guardados en ficheros que se pueden leer, buscar y sincronizar.
+</p>
 
-## 📁 Estructura
-
-```
-/mnt/c/Users/Hugop/Dev/pi-memory/
-├── README.md
-└── hugo/
-    └── core/
-        ├── USER.md
-        └── project/
-            ├── bbdd-deletion.md
-            └── pi-messenger-session.md
-```
+<p align="center">
+  <img alt="licencia" src="https://img.shields.io/badge/licencia-CC%20BY--NC--SA%204.0-8E8E93?style=flat-square&labelColor=1a1a1e">
+  <img alt="markdown" src="https://img.shields.io/badge/Markdown-3DDC84?style=flat-square&labelColor=1a1a1e">
+  <img alt="memoria" src="https://img.shields.io/badge/memoria-persistente-ff5f5f7?style=flat-square&labelColor=1a1a1e">
+</p>
 
 ---
 
-## 🔮 ¿Cómo retomar la sesión?
+## Qué es esto
 
-En una sesión futura, la información persistirá de dos formas:
+Un repositorio de memoria persistente para un agente de IA. Los ficheros `.md`
+guardan lo que hay que recordar entre sesiones: el perfil del usuario, el
+estado de los proyectos y lo que pasó en una sesión de trabajo.
 
-1. **context-mode** — con `ctx_search({ sort: "timeline", queries: ["Tuxillo", ...] })` recupero el historial de sesiones automáticamente.
-2. **pi-memory-md** — con `memory_search({ query: "tuxillo" })` encuentro los archivos de memoria en el repo de GitHub.
+Cada fichero lleva `frontmatter` (`description`, `tags`, `created`, `updated`),
+que es lo que permite buscar por texto y por etiquetas.
 
----
+Hoy hay tres ficheros de memoria:
 
-## 🧠 pi-memory-md — Archivos de memoria persistentes (git)
+| Fichero | Qué guarda |
+|---|---|
+| [`hugo/core/USER.md`](hugo/core/USER.md) | Perfil del usuario: la agente se llama **Elisa**, habla español y responde de forma directa. |
+| [`hugo/core/project/bbdd-deletion.md`](hugo/core/project/bbdd-deletion.md) | **Tuxillo** borró la base de datos; la BBDD está limpia. |
+| [`hugo/core/project/pi-messenger-session.md`](hugo/core/project/pi-messenger-session.md) | Sesión del 18-05-2026: **BrightEagle** pasó a llamarse **Tuxillo** (el alias de Hugo) y **YoungYak** a **Elisa**. |
 
-| Comando | Qué hace |
-|---------|----------|
-| `memory_check()` | Ver estructura de la memoria del proyecto |
-| `memory_list({ directory: "core" })` | Listar archivos de memoria |
-| `memory_search({ query: "elisa" })` | Buscar por tags / descripción |
-| `memory_search({ grep: "BBDD" })` | Buscar texto completo en archivos |
-| `memory_search({ rg: "Tuxillo" })` | Buscar con ripgrep |
-| `memory_sync({ action: "status" })` | Ver estado del repo git |
-| `memory_sync({ action: "push" })` | Subir cambios a GitHub |
-| `memory_sync({ action: "pull" })` | Traer cambios de GitHub |
+## Las tres piezas
 
-### Skills de memoria
+| Pieza | Para qué |
+|---|---|
+| **pi-memory-md** | Indexa y busca los ficheros de memoria de este repositorio, y los sincroniza con GitHub. |
+| **pi-messenger** | El mesh donde los agentes se conectan, se hablan y se reparten el trabajo. |
+| **context-mode** | Base de conocimiento con FTS5: recupera el historial de sesiones y ejecuta código sin llenar el contexto. |
 
-| Skill | Descripción |
-|-------|-------------|
-| `memory-init` | Inicializar repo de memoria |
-| `memory-write` | Crear / actualizar archivos de memoria |
-| `memory-import` | Importar URLs, carpetas a la memoria |
-
----
-
-## 💬 pi-messenger — Comunicación entre agentes
-
-### Conexión y estado
-
-| Comando | Descripción |
-|---------|-------------|
-| `join` | Unirse al mesh |
-| `leave` | Salir del mesh |
-| `status` | Ver estado propio y peers conectados |
-| `list` | Listar todos los agentes conectados |
-| `whois` | Ver detalles de un agente (`name: "YoungYak"`) |
-| `set_status` | Poner estado personalizado (`message: "revisando..."`) |
-| `feed` | Ver actividad reciente (`limit: 20`) |
-
-### Mensajería
-
-| Comando | Descripción |
-|---------|-------------|
-| `send` | Enviar mensaje (`to: "Agente", message: "..."`) |
-| `rename` | Cambiar tu nombre (`name: "NuevoNombre"`) |
-
-### Archivos
-
-| Comando | Descripción |
-|---------|-------------|
-| `reserve` | Reservar archivos (`paths: ["src/"]`) |
-| `release` | Liberar archivos reservados |
-
-### Planes y tareas (Crew)
-
-| Comando | Descripción |
-|---------|-------------|
-| `plan` | Crear plan desde PRD o prompt (`prompt: "..."`) |
-| `plan.cancel` | Cancelar plan activo |
-| `work` | Ejecutar tareas listas |
-| `work.stop` | Parar ejecución autónoma |
-| `task.list` | Listar todas las tareas |
-| `task.show` | Ver detalle de tarea (`id: "task-1"`) |
-| `task.start` | Iniciar tarea (`id: "task-1"`) |
-| `task.done` | Marcar tarea completada (`id: "..."`, `summary: "..."`) |
-| `task.split` | Dividir tarea en subtareas |
-| `task.reset` | Resetear tarea |
-
-### Revisiones
-
-| Comando | Descripción |
-|---------|-------------|
-| `review` | Revisar implementación (`target: "task-1"`) |
-
----
-
-## 📊 context-mode — Base de conocimiento FTS5
-
-| Comando | Qué hace |
-|---------|----------|
-| `ctx_stats()` | Ver cuánto contexto has ahorrado esta sesión |
-| `ctx_search({ queries: ["..."] })` | Buscar en contenido indexado (relevancia) |
-| `ctx_search({ queries: ["..."], sort: "timeline" })` | Buscar cronológicamente |
-| `ctx_execute({ language: "js", code: "..." })` | Ejecutar código sin llenar el contexto |
-| `ctx_execute_file({ path: "...", language: "js" })` | Procesar archivos grandes sin traerlos al contexto |
-| `ctx_batch_execute({ commands: [...], queries: [...] })` | El más potente: ejecuta y busca en una llamada |
-| `ctx_fetch_and_index({ url: "..." })` | Descargar web e indexarla |
-| `ctx_index({ content: "..." })` | Indexar contenido manualmente |
-
-### Skills de context-mode
-
-| Comando | Qué hace |
-|---------|----------|
-| `ctx-doctor` | Diagnosticar instalación |
-| `ctx-insight` | Dashboard visual de analytics |
-| `ctx-stats` | Estadísticas de ahorro de contexto |
-| `ctx-upgrade` | Actualizar context-mode |
-| `ctx-purge` | ⚠️ Borrar toda la base de conocimiento |
-
----
-
-## 💡 Trucos útiles
-
-Al empezar una sesión nueva:
+## Retomar una sesión
 
 ```javascript
-// Recuperar contexto automáticamente
+// recuperar el historial de sesiones
 ctx_search({ sort: "timeline", queries: ["Tuxillo", "Elisa", "eventos importantes"] })
 
-// Consultar memoria persistente
+// consultar la memoria persistente
 memory_search({ query: "elisa" })
 ```
+
+## pi-memory-md — la memoria en git
+
+| Comando | Qué hace |
+|---|---|
+| `memory_check()` | Ver la estructura de la memoria del proyecto |
+| `memory_list({ directory: "core" })` | Listar los ficheros de memoria |
+| `memory_search({ query: "elisa" })` | Buscar por etiquetas o descripción |
+| `memory_search({ grep: "BBDD" })` | Buscar texto completo en los ficheros |
+| `memory_search({ rg: "Tuxillo" })` | Buscar con ripgrep |
+| `memory_sync({ action: "status" })` | Ver el estado del repo git |
+| `memory_sync({ action: "push" })` | Subir los cambios a GitHub |
+| `memory_sync({ action: "pull" })` | Traer los cambios de GitHub |
+
+Skills de memoria: `memory-init` (inicializar el repo), `memory-write` (crear o
+actualizar ficheros) e `memory-import` (importar URLs o carpetas).
+
+## pi-messenger — comunicación entre agentes
+
+**Conexión y estado**
+
+| Comando | Descripción |
+|---|---|
+| `join` | Unirse al mesh |
+| `leave` | Salir del mesh |
+| `status` | Ver el estado propio y los peers conectados |
+| `list` | Listar todos los agentes conectados |
+| `whois` | Ver detalles de un agente (`name: "YoungYak"`) |
+| `set_status` | Poner un estado propio (`message: "revisando..."`) |
+| `feed` | Ver la actividad reciente (`limit: 20`) |
+
+**Mensajería**
+
+| Comando | Descripción |
+|---|---|
+| `send` | Enviar un mensaje (`to: "Agente", message: "..."`) |
+| `rename` | Cambiar el nombre propio (`name: "NuevoNombre"`) |
+
+**Archivos**
+
+| Comando | Descripción |
+|---|---|
+| `reserve` | Reservar archivos (`paths: ["src/"]`) |
+| `release` | Liberar los archivos reservados |
+
+**Planes y tareas (Crew)**
+
+| Comando | Descripción |
+|---|---|
+| `plan` | Crear un plan desde un PRD o un prompt (`prompt: "..."`) |
+| `plan.cancel` | Cancelar el plan activo |
+| `work` | Ejecutar las tareas listas |
+| `work.stop` | Parar la ejecución autónoma |
+| `task.list` | Listar todas las tareas |
+| `task.show` | Ver el detalle de una tarea (`id: "task-1"`) |
+| `task.start` | Iniciar una tarea (`id: "task-1"`) |
+| `task.done` | Marcar una tarea como hecha (`id: "..."`, `summary: "..."`) |
+| `task.split` | Dividir una tarea en subtareas |
+| `task.reset` | Reiniciar una tarea |
+
+**Revisiones**
+
+| Comando | Descripción |
+|---|---|
+| `review` | Revisar una implementación (`target: "task-1"`) |
+
+## context-mode — base de conocimiento FTS5
+
+| Comando | Qué hace |
+|---|---|
+| `ctx_stats()` | Ver cuánto contexto ha ahorrado la sesión |
+| `ctx_search({ queries: ["..."] })` | Buscar por relevancia en el contenido indexado |
+| `ctx_search({ queries: ["..."], sort: "timeline" })` | Buscar por orden cronológico |
+| `ctx_execute({ language: "js", code: "..." })` | Ejecutar código sin llenar el contexto |
+| `ctx_execute_file({ path: "...", language: "js" })` | Procesar ficheros grandes sin traerlos al contexto |
+| `ctx_batch_execute({ commands: [...], queries: [...] })` | Ejecutar y buscar en una sola llamada |
+| `ctx_fetch_and_index({ url: "..." })` | Descargar una web e indexarla |
+| `ctx_index({ content: "..." })` | Indexar contenido a mano |
+
+Skills de context-mode: `ctx-doctor` (diagnosticar la instalación), `ctx-insight`
+(dashboard de analítica), `ctx-stats` (estadísticas de ahorro de contexto),
+`ctx-upgrade` (actualizar) y `ctx-purge` (borrar la base de conocimiento).
 
 Para análisis rápidos sin saturar el contexto:
 
@@ -153,29 +148,29 @@ ctx_batch_execute({
 })
 ```
 
----
+## Estructura
 
-## 🔧 Comandos git habituales
-
-```bash
-cd /mnt/c/Users/Hugop/Dev/pi-memory
-git add -A
-git commit -m "Mensaje descriptivo"
-git push
+```
+Pi-Memories/
+├── hugo/
+│   └── core/
+│       ├── USER.md                       perfil del agente
+│       └── project/
+│           ├── bbdd-deletion.md          estado de la BBDD
+│           └── pi-messenger-session.md   resumen de la sesión del mesh
+├── docs/capturas/                       cabecera del README
+└── LICENSE                              CC BY-NC-SA 4.0
 ```
 
----
+## Licencia
 
-## 📄 Licencia
-
-**CC BY-NC-SA 4.0** — Compartir con atribución, sin uso comercial. Consulta [LICENSE](LICENSE) para más detalles.
+**CC BY-NC-SA 4.0** — se puede compartir y adaptar con atribución, siempre sin
+uso comercial y bajo la misma licencia. Texto completo en
+[LICENSE](LICENSE).
 
 ---
 
 <div align="center">
-
-**Desarrollado por [Hugo Perez-Vigo](https://hugopvigo.es)** · [@hugopvigo](https://x.com/hugopvigo)
-
-[![GitHub](https://img.shields.io/badge/GitHub-Hugopvigo-181717?style=for-the-badge&logo=github)](https://github.com/Hugopvigo)
-
+  Hugo Pérez Vigo · [@hugopvigo](https://x.com/hugopvigo) ·
+  [github.com/Hugopvigo](https://github.com/Hugopvigo)
 </div>
