@@ -2,6 +2,7 @@
 <meta property="og:description" content="La memoria de un agente de IA, en Markdown y versionada en Git.">
 <meta property="og:image" content="https://raw.githubusercontent.com/Hugopvigo/Pi-Memories/main/docs/capturas/og.png">
 
+
 <p align="center">
   <img src="docs/capturas/00-cabecera.png" alt="Pi Memories — memoria persistente en Markdown para un agente de IA" width="100%">
 </p>
